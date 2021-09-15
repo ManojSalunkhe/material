@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Card, CardContent, Button, TextField, makeStyles, Avatar } from '@material-ui/core'
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import { Link } from 'react-router-dom'
+import { Link, useRouteMatch } from 'react-router-dom'
 
 
 const useStyles = makeStyles({
@@ -30,11 +30,13 @@ const useStyles = makeStyles({
 
 function LogIn(props) {
 
+    const {path, url} = useRouteMatch();
+    console.log('Path', path, 'URL', url);
     const classes = useStyles()
 
 
     const handleClick = () => {
-        props.history.push("/customerslist")
+        props.history.push("/");
     }
 
     return (
