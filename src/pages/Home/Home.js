@@ -1,5 +1,9 @@
 import React from 'react';
-import { Button, makeStyles, Box } from '@material-ui/core';
+import {
+    Button,
+    makeStyles,
+    Box
+} from '@material-ui/core';
 
 
 const useStyles = makeStyles({
@@ -32,7 +36,7 @@ function Home(props) {
     const classes = useStyles()
 
     const handleClick = () => {
-        props.history.push("/customer-list")
+        props.history.push("/login")
     }
     return (
         <div>
@@ -43,7 +47,7 @@ function Home(props) {
                 minHeight="80vh" >
                 <Button variant="contained" color="primary" className={classes.button} onClick={handleClick}>Let's Begin...</Button>
             </Box>
-        </div>
+        </div >
     )
 }
 

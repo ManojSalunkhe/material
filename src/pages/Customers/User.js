@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios'
 import {
     makeStyles,
     Card,
@@ -36,11 +37,15 @@ function User() {
 
     const classes = useStyles()
 
-    const users = [
-        { id: 1, firstName: "Rahul", lastName: "cool", contact: "9876543210", email: "rahul@gmail.com" },
-        { id: 2, firstName: "Manish", lastName: "dwig", contact: "9876543210", email: "dwig@gmail.com" },
-        { id: 3, firstName: "Mani", lastName: "thammana", contact: "9876543210", email: "thammana@gmail.com" }
-    ]
+    const [users, setUsers] = useState([])
+
+    useEffect(() => {
+        const apiCall = async () => {
+            const result = await axios.get('https://jsonplaceholder.typicode.com/users')
+            setUsers(result.data)
+        }
+        apiCall()
+    }, [])
 
     const result = users.filter((user) => {
         return user.id === Number(id)
@@ -55,11 +60,13 @@ function User() {
                         return (
                             <Card key={user.id} className={classes.info}>
                                 <p> id : {user.id}</p>
-                                <Avatar alt={user.firstName} src="." className={classes.avatar} />
-                                <p> First name : {user.firstName}</p>
-                                <p> Last name : {user.lastName}</p>
-                                <p>contact : {user.contact}</p>
-                                <p>email : {user.email}</p>
+                                <Avatar alt={user.name} src="." className={classes.avatar} />
+                                <p> name : {user.name}</p>
+                                <p> email : {user.email}</p>
+                                <p>phone : {user.phone}</p>
+                                <p>website : {user.website}</p>
+                                <p>address : street - {user.address.street} ,city - {user.address.city}</p>
+                                <p>company : name - {user.company.name}</p>
                             </Card>
                         )
                     })

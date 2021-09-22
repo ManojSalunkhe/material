@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Button, makeStyles, TextField } from '@material-ui/core';
-import Conform from "./Conform";
+import {
+    Button,
+    makeStyles,
+    TextField
+} from '@material-ui/core';
 
 const useStyles = makeStyles({
     container: {
@@ -31,7 +34,7 @@ function Form(props) {
     const [lName, setLName] = useState(customer ? customer.lastName : '')
     const [contact, setContact] = useState(customer ? customer.contact : '')
     const [email, setEmail] = useState(customer ? customer.email : '')
-    const [conformOpen, setConformOpen] = useState(false)
+    // const [conformOpen, setConformOpen] = useState(false)
 
     const handleChange = (e) => {
         if (e.target.name === "first") {
@@ -56,23 +59,25 @@ function Form(props) {
         }
     }
 
-    const handleConformOpen = () => {
-        setConformOpen(true)
-    }
-
-    const handleConformation = (data) => {
-        if (data === "accept") {
-            handleSubmit()
-            setConformOpen(false)
-        }
-        if (data === "decline") {
-            setConformOpen(false)
-        }
-    }
+    // const handleConformation = (data) => {
+    //     if (data === "accept") {
+    //         handleSubmit()
+    //         setConformOpen(false)
+    //     }
+    //     if (data === "decline") {
+    //         setConformOpen(false)
+    //     }
+    // }
 
     const handleSubmit = () => {
-        const data = {
+        const newdata = {
             id: Number(new Date()),
+            firstName: fName,
+            lastName: lName,
+            contact: contact,
+            email: email
+        }
+        const editedData = {
             firstName: fName,
             lastName: lName,
             contact: contact,
@@ -80,10 +85,10 @@ function Form(props) {
         }
 
         if (handleAdd) {
-            handleAdd(data)
+            handleAdd(newdata)
         }
         if (handleEditSave) {
-            handleEditSave(data)
+            handleEditSave(editedData)
         }
     }
 
@@ -142,7 +147,7 @@ function Form(props) {
                 className={classes.button}
                 variant="contained"
                 color="primary"
-                onClick={handleConformOpen}
+                onClick={handleSubmit}
             >save
             </Button>
             <Button
@@ -152,15 +157,6 @@ function Form(props) {
                 onClick={handleClosing}
             >cancel
             </Button>
-            {
-                conformOpen && (
-                    <Conform
-                        conformOpen={conformOpen}
-                        handleConformation={handleConformation}
-                        customer={customer}
-                    />
-                )
-            }
         </div>
     )
 }

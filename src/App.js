@@ -1,8 +1,9 @@
-import React from 'react'
+import React from 'react';
 import './App.css';
 import routes from './routes/Routes';
 import { BrowserRouter, Route } from 'react-router-dom';
-
+import PrivateRoute from './pages/PrivateRouting/PrivateRoute';
+import { privatess } from './routes/Routes';
 
 function App() {
 
@@ -22,10 +23,22 @@ function App() {
           })
         }
         {
-          routes.map((route) =>
+          privatess.map((route, index) => {
+            return (
+              <PrivateRoute
+                path={route.path}
+                exact={route.exact}
+                component={route.component}
+                key={index}
+              />
+            )
+          })
+        }
+        {
+          privatess.map((route) =>
             route.childComponents
               ? route.childComponents.map((childRoute, index) => (
-                <Route
+                <PrivateRoute
                   path={childRoute.path}
                   exact={childRoute.exact}
                   component={childRoute.component}

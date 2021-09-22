@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import DialogComp from "../DialogComp";
-import EditForm from "../EditForm";
-import Delete from "../Delete";
+import React, { useState, useEffect } from "react";
+import DialogComp from "../components/DialogComp";
+import EditForm from "../components/EditForm";
+import Delete from '../components/Delete';
+import Drawers from "../../react-hool-form/Drawers";
 import userTableColumns from "../../constants/user-table-columns";
 import {
     Table,
@@ -13,11 +14,15 @@ import {
     Button,
     makeStyles,
     Paper,
-    Avatar
+    Avatar,
+    TablePagination,
+    TableFooter
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import axios from "axios";
+
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -46,13 +51,29 @@ const useStyles = makeStyles((theme) => ({
 
 function Customerslist(props) {
 
-    const classes = useStyles()
+    const classes = useStyles();
 
-    const [arr, setArr] = useState([
-        { id: 1, firstName: "Rahul", lastName: "cool", contact: "9876543210", email: "rahul@gmail.com" },
-        { id: 2, firstName: "Manish", lastName: "dwig", contact: "9876543210", email: "dwig@gmail.com" },
-        { id: 3, firstName: "Mani kanta", lastName: "thammana", contact: "9876543210", email: "thammana@gmail.com" }
-    ])
+    const [arr, setArr] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+    useEffect(() => {
+        const apiCall = async () => {
+            const result = await axios.get('https://jsonplaceholder.typicode.com/users')
+            setArr(result.data)
+        }
+        apiCall()
+    }, [])
 
     const [open, setOpen] = useState(false)
     const [editOpen, setEditOpen] = useState(false)
@@ -101,7 +122,6 @@ function Customerslist(props) {
     const handleRemoveClose = () => setRemoveOpen(false)
 
     const handleRemove = (id) => {
-        console.log('remove')
         const result = arr.filter((ele) => {
             return ele.id !== id
         })
@@ -115,6 +135,7 @@ function Customerslist(props) {
 
     return (
         <div className={classes.container}>
+            <Drawers {...props} />
             <Button
                 className={classes.button}
                 variant="contained"
@@ -122,7 +143,7 @@ function Customerslist(props) {
                 onClick={handleOpen}
             >
                 <AddIcon /> Add customer
-            </Button>
+            </Button><br />
             <TableContainer
                 component={Paper}
                 style={{ border: "2px solid gray", borderRadius: "12px" }}
@@ -141,16 +162,17 @@ function Customerslist(props) {
                     </TableHead>
                     <TableBody >
                         {
-                            arr.map((ele) => {
+                            arr.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((ele) => {
                                 return (
                                     <TableRow key={ele.id}>
                                         <TableCell className={classes.cursor} onClick={() => handleSingleCustomerShow(ele.id)}>
                                             <Avatar alt={ele.firstName} src="." className={classes.avatar} />
-                                            <b>{ele.firstName}</b>
+                                            <b>{ele.name}</b>
                                         </TableCell>
-                                        <TableCell>{ele.lastName}</TableCell>
-                                        <TableCell>{ele.contact}</TableCell>
+                                        <TableCell>{ele.username}</TableCell>
                                         <TableCell>{ele.email}</TableCell>
+                                        <TableCell>{ele.phone}</TableCell>
+                                        <TableCell>{ele.website}</TableCell>
                                         <TableCell className={classes.cursor} onClick={() => handleEdit(ele.id)}><EditIcon /></TableCell>
                                         <TableCell className={classes.cursor}><DeleteIcon onClick={() => handleRemoveOpen(ele.id)} /></TableCell>
                                     </TableRow>
@@ -158,8 +180,18 @@ function Customerslist(props) {
                             })
                         }
                     </TableBody>
+                    <TableFooter>
+                        <TablePagination
+                            rowsPerPageOptions={[2, 5, 10]}
+                            count={arr.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage} />
+                    </TableFooter>
                 </Table>
             </TableContainer>
+
             {
                 open && (
                     <DialogComp
