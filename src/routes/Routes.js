@@ -10,6 +10,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import LogoutIcon from '@mui/icons-material/Logout';
 import InfoIcon from '@mui/icons-material/Info';
+import GroupIcon from '@material-ui/icons/Group';
 
 const routes = [
     {
@@ -17,36 +18,40 @@ const routes = [
         component: Home,
         name: "Home",
         exact: true,
-        icon: <HomeIcon />
-
+        icon: <HomeIcon />,
+        drawerRoute: true
     },
     {
         path: "/register",
         component: Register,
         name: "Register",
         exact: true,
-        icon: <NoteAltIcon />
+        icon: <NoteAltIcon />,
+        drawerRoute: false
     },
     {
         path: "/about",
         component: About,
         name: "About",
         exact: true,
-        icon: <InfoIcon />
+        icon: <InfoIcon />,
+        drawerRoute: true
     },
     {
         path: "/login",
         component: Login,
         name: "Login",
         exact: true,
-        icon: <HomeIcon />
+        icon: <HomeIcon />,
+        drawerRoute: false
     },
-    {
-        path: "/",
-        name: "Logout",
-        exact: true,
-        icon: <LogoutIcon />
-    }
+    // {
+    //     path: "/login",
+    //     name: "Logout",
+    //     exact: true,
+    //     icon: <LogoutIcon />,
+    //     drawerRoute: true
+    // }
     // {
     //     path: "/customer-list",
     //     component: Customerslist,
@@ -66,8 +71,9 @@ const routes = [
 export const privatess = [{
     path: "/customer-list",
     component: Customerslist,
-    name: "Customerslist",
+    name: "Customers-list",
     exact: true,
+    icon: <GroupIcon />,
     childComponents: [
         {
             path: "/customer-list/:id",
@@ -76,7 +82,15 @@ export const privatess = [{
             exact: true,
         },
     ],
-}]
+},
+{
+    path: "/login",
+    name: "Logout",
+    exact: true,
+    icon: <LogoutIcon />,
+    drawerRoute: true
+}
+]
 
 
 export default routes;

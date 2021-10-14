@@ -1,19 +1,22 @@
 import React from 'react'
-import { makeStyles, Typography } from '@material-ui/core'
+import { makeStyles, Typography } from '@material-ui/core';
+import Drawers from '../react-hool-form/Drawers';
 
 const useStyles = makeStyles({
     design: {
         width: "40%",
         margin: "auto",
-        marginTop: 50,
+        marginTop: 150,
         fontWeight: "bold"
     }
 })
 
-function About() {
+function About(props) {
     const classes = useStyles();
+
     return (
         <div className={classes.design}>
+            <Drawers {...props} />
             <Typography >
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus

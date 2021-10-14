@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Typography,
     Toolbar,
@@ -6,124 +6,105 @@ import {
     ListItem,
     ListItemText,
     Drawer,
-    IconButton,
     Divider,
     ListItemIcon,
-    Box
+    AppBar
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
 import routes from '../routes/Routes';
-import { styled, useTheme } from '@mui/material/styles';
-import MuiAppBar from '@mui/material/AppBar';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CssBaseline from '@mui/material/CssBaseline';
+import { makeStyles } from '@material-ui/core/styles';
+import { privatess } from "../routes/Routes";
 
-const drawerWidth = 140;
+
+const drawerWidth = 200;
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex'
+    },
+    appBar: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth
+    },
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
+    content: {
+        flexGrow: 1,
+        backgroundColor: "black",
+        padding: theme.spacing(3),
+    },
+}));
+
+
 
 function Drawers(props) {
 
-    const theme = useTheme();
-    const [open, setOpen] = useState(false);
-
-    const handleDrawerOpen = () => setOpen(true)
-
-    const handleDrawerClose = () => setOpen(false)
+    const classes = useStyles();
 
     const handleRedirect = (name) => {
-        const result = routes.find((route) => {
-            return route.name === name
-        })
-        if (result.name === "Logout") {
-            localStorage.clear();
-        }
-        props.history.push(`${result.path}`)
-
+        const result = routes.find((route) => route.name === name);
+        const prRoute = privatess.find((route) => route.name === name);
+        result && props.history.push(result.path);
+        prRoute && props.history.push(prRoute.path);
+        prRoute && prRoute.name === "Logout" && localStorage.clear();
     }
 
-    const AppBar = styled(MuiAppBar, {
-        shouldForwardProp: (prop) => prop !== 'open',
-    })(({ theme, open }) => ({
-        transition: theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        ...(open && {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginLeft: `${drawerWidth}px`,
-            transition: theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        }),
-    }));
-
-    const DrawerHeader = styled('div')(({ theme }) => ({
-        display: 'flex',
-        alignItems: 'center',
-        padding: theme.spacing(0, 1),
-        // // necessary for content to be below app bar
-        // ...theme.mixins.toolbar,
-        justifyContent: 'flex-end',
-    }));
-
     return (
-        <Box sx={{ display: 'flex' }}>
+        <div className={classes.root}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
+            <AppBar position="fixed" className={classes.appBar} >
                 <Toolbar>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={handleDrawerOpen}
-                        sx={{ mr: 2, ...(open && { display: 'none' }) }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Customers List
+                    <Typography variant="h6" noWrap >
+                        Dashboard
                     </Typography>
                 </Toolbar>
             </AppBar>
             <Drawer
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    '& .MuiDrawer-paper': {
-                        width: drawerWidth,
-                        boxSizing: 'border-box',
-                    },
+                className={classes.drawer}
+                variant="permanent"
+                classes={{
+                    paper: classes.drawerPaper,
                 }}
-                variant="persistent"
-                open={open}
+                anchor="left"
             >
-                <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? (
-                            <ChevronLeftIcon />
-                        ) : (
-                            <ChevronRightIcon />
-                        )}
-                    </IconButton>
-                </DrawerHeader>
+                <div className={classes.toolbar} />
                 <Divider />
                 <List>
                     {
                         routes.map((route) => {
-                            if (route.name !== "Login" && route.name !== "Register") {
+                            return (
+                                route.drawerRoute &&
+                                <ListItem key={route.name} button onClick={() => handleRedirect(route.name)}>
+                                    <ListItemIcon>{route.icon}</ListItemIcon>
+                                    <ListItemText primary={route.name} />
+                                </ListItem>
+                            )
+                        })
+                    }
+                    <Divider />
+                    {
+                        localStorage.getItem("auth") && (
+                            privatess.map((route) => {
                                 return (
                                     <ListItem key={route.name} button onClick={() => handleRedirect(route.name)}>
                                         <ListItemIcon>{route.icon}</ListItemIcon>
                                         <ListItemText primary={route.name} />
                                     </ListItem>
                                 )
-                            }
-                        })
+                            })
+                        )
                     }
                 </List>
-                <Divider />
             </Drawer>
-        </Box >
+            <div className={classes.toolbar} />
+        </div >
 
     )
 }

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import DialogComp from "../components/DialogComp";
 import EditForm from "../components/EditForm";
 import Delete from '../components/Delete';
-import Drawers from "../../react-hool-form/Drawers";
 import userTableColumns from "../../constants/user-table-columns";
 import {
     Table,
@@ -22,12 +21,13 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from "axios";
-
+import Drawers from "../../react-hool-form/Drawers";
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        margin: "auto",
-        marginTop: "150px",
+        marginLeft : 300,
+        marginTop: 10,
+        marginBottom : 40,
         width: "70%",
 
     },
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         float: "right",
-        marginBottom: 20
+        marginBottom: 10
     },
     cursor: {
         cursor: "pointer"
@@ -187,7 +187,8 @@ function Customerslist(props) {
                             rowsPerPage={rowsPerPage}
                             page={page}
                             onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage} />
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
                     </TableFooter>
                 </Table>
             </TableContainer>
