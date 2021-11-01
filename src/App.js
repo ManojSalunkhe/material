@@ -4,7 +4,6 @@ import routes from './routes/Routes';
 import { BrowserRouter, Route } from 'react-router-dom';
 import PrivateRoute from './pages/PrivateRouting/PrivateRoute';
 import { privatess } from './routes/Routes';
-import Drawers from './react-hool-form/Drawers';
 
 function App(props) {
 

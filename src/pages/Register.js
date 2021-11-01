@@ -8,6 +8,8 @@ import {
     Button
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import bcrypt from 'bcryptjs';
 
 const useStyles = makeStyles({
     card: {
@@ -50,8 +52,19 @@ function Register(props) {
             email: registerCredentials.email,
             password: registerCredentials.password
         }
-        console.log(data)
-        setRegisterCredentials(initialData)
+        // setRegisterCredentials(initialData)
+        const reg = async () => {
+            try {
+                const result = await axios.post('http://localhost:3601/register', data)
+                if (result) {
+                    alert("sucessfull registeration")
+                    props.history.push('/login')
+                }
+            } catch (err) {
+                console.log("error", err)
+            }
+        }
+        reg()
     }
     return (
         <div>

@@ -4,6 +4,7 @@ import {
     makeStyles,
     TextField
 } from '@material-ui/core';
+import axios from 'axios';
 
 const useStyles = makeStyles({
     container: {
@@ -30,21 +31,21 @@ function Form(props) {
 
     const { handleAdd, handleClose, customer, handleEditSave, handleEditClose } = props
 
-    const [fName, setFName] = useState(customer ? customer.firstName : '')
-    const [lName, setLName] = useState(customer ? customer.lastName : '')
-    const [contact, setContact] = useState(customer ? customer.contact : '')
+    const [firstName, setFirstName] = useState(customer ? customer.firstName : '')
+    const [lastName, setLastName] = useState(customer ? customer.lastName : '')
+    const [mobile, setMobile] = useState(customer ? customer.mobile : '')
     const [email, setEmail] = useState(customer ? customer.email : '')
     // const [conformOpen, setConformOpen] = useState(false)
 
     const handleChange = (e) => {
         if (e.target.name === "first") {
-            setFName(e.target.value)
+            setFirstName(e.target.value)
         }
         if (e.target.name === "last") {
-            setLName(e.target.value)
+            setLastName(e.target.value)
         }
         if (e.target.name === "contact") {
-            setContact(e.target.value)
+            setMobile(e.target.value)
         }
         if (e.target.name === "email") {
             setEmail(e.target.value)
@@ -72,23 +73,51 @@ function Form(props) {
     const handleSubmit = () => {
         const newdata = {
             id: Number(new Date()),
-            firstName: fName,
-            lastName: lName,
-            contact: contact,
+            firstName: firstName,
+            lastName: lastName,
+            mobile: mobile,
             email: email
         }
         const editedData = {
-            firstName: fName,
-            lastName: lName,
-            contact: contact,
+            firstName: firstName,
+            lastName: lastName,
+            mobile: mobile,
             email: email
         }
 
         if (handleAdd) {
-            handleAdd(newdata)
+            const addData = async () => {
+                const token = {
+                    headers: {
+                        'x-auth': JSON.parse(localStorage.getItem("auth"))
+                    }
+                }
+                try {
+                    const result = await axios.post('http://localhost:3601/employee', newdata, token)
+                    console.log(result.data)
+                    // handleAdd(result.data)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+            addData()
         }
         if (handleEditSave) {
-            handleEditSave(editedData)
+            const editData = async () => {
+                const token = {
+                    headers: {
+                        'x-auth': JSON.parse(localStorage.getItem("auth"))
+                    }
+                }
+                try {
+                    const result = await axios.put(`http://localhost:3601/employee/${customer.id}`, editedData, token)
+                    handleEditSave(customer.id, editedData)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+            editData()
+            // handleEditSave(editedData)
         }
     }
 
@@ -102,7 +131,7 @@ function Form(props) {
                 label="first name"
                 required
                 fullWidth
-                value={fName}
+                value={firstName}
                 name="first"
                 onChange={(e) => handleChange(e)}
             >
@@ -113,7 +142,7 @@ function Form(props) {
                 label="last name"
                 required
                 fullWidth
-                value={lName}
+                value={lastName}
                 name="last"
                 onChange={(e) => handleChange(e)}
             >
@@ -126,7 +155,7 @@ function Form(props) {
                 required
                 fullWidth
                 type="number"
-                value={contact}
+                value={mobile}
                 name="contact"
                 onChange={(e) => handleChange(e)}
             >

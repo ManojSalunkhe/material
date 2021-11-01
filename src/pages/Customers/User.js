@@ -41,14 +41,14 @@ function User() {
 
     useEffect(() => {
         const apiCall = async () => {
-            const result = await axios.get('https://jsonplaceholder.typicode.com/users')
+            const result = await axios.get('http://localhost:3601/employees')
             setUsers(result.data)
         }
         apiCall()
     }, [])
 
     const result = users.filter((user) => {
-        return user.id === Number(id)
+        return user.id == id
     })
 
     return (
@@ -60,13 +60,11 @@ function User() {
                         return (
                             <Card key={user.id} className={classes.info}>
                                 <p> id : {user.id}</p>
-                                <Avatar alt={user.name} src="." className={classes.avatar} />
-                                <p> name : {user.name}</p>
-                                <p> email : {user.email}</p>
-                                <p>phone : {user.phone}</p>
-                                <p>website : {user.website}</p>
-                                <p>address : street - {user.address.street} ,city - {user.address.city}</p>
-                                <p>company : name - {user.company.name}</p>
+                                <Avatar alt={user.firstName} src="." className={classes.avatar} />
+                                <p> First Name : {user.firstName}</p>
+                                <p> Last Name : {user.lastName}</p>
+                                <p>Email : {user.email}</p>
+                                <p>Mobile : {user.mobile}</p>
                             </Card>
                         )
                     })

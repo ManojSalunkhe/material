@@ -1,23 +1,23 @@
 const userTableColumns = [
     {
-        columnId: 'name',
-        columnText: 'Name'
+        columnId: 'avatar',
+        columnText: 'Avatar'
     },
     {
-        columnId: 'username',
-        columnText: 'Username'
+        columnId: 'first name',
+        columnText: 'First Name'
+    },
+    {
+        columnId: 'last name',
+        columnText: 'Last Name'
     },
     {
         columnId: 'email',
         columnText: 'Email'
     },
     {
-        columnId: 'phone',
-        columnText: 'Phone'
-    },
-    {
-        columnId: 'website',
-        columnText: 'Website'
+        columnId: 'mobile',
+        columnText: 'Mobile'
     },
     {
         columnId: 'edit',

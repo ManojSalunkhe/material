@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import axios from 'axios';
+import jwt from 'jsonwebtoken'
 
 const useStyles = makeStyles({
     card: {
@@ -39,7 +41,7 @@ const useStyles = makeStyles({
 })
 
 const schema = yup.object().shape({
-    username: yup.string().required(),
+    email: yup.string().required(),
     password: yup.string().required().min(6)
 })
 
@@ -62,19 +64,25 @@ function LogIn(props) {
     //     }
     // }
 
-
     const handleLogin = (data) => {
-        if (data.username === "rahul" && data.password === "9876543210") {
-            localStorage.setItem("auth", JSON.stringify(true))
+        const apiCall = async () => {
+            try {
+                const result = await axios.post("http://localhost:3601/login", data)
+                console.log('logo', result.data)
+                if (result.data.token) {
+                    localStorage.setItem("auth", JSON.stringify(result.data.token))
+                    alert("successfully logged in")
+                }
+                const auth = JSON.parse(localStorage.getItem("auth"))
+                if (auth) {
+                    props.history.push("/customer-list")
+                }
+            } catch (err) {
+                alert("wrong credentials")
+                console.log("login err here", err)
+            }
         }
-        else {
-            alert('wrong credentials')
-        }
-
-        const auth = JSON.parse(localStorage.getItem("auth"))
-        if (auth === true) {
-            props.history.push("/customer-list")
-        }
+        apiCall()
     }
 
     return (
@@ -87,13 +95,13 @@ function LogIn(props) {
                     < form onSubmit={handleSubmit(handleLogin)} >
                         <Grid item >
                             < TextField
-                                {...register("username")}
-                                label="username"
+                                {...register("email")}
+                                label="email"
                                 variant="outlined"
                                 fullWidth
                                 required
                             />
-                            <p> {errors.username?.message}</p>
+                            <p> {errors.email?.message}</p>
                         </Grid>
                         <Grid item>
                             <TextField

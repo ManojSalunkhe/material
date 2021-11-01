@@ -22,12 +22,13 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from "axios";
 import Drawers from "../../react-hool-form/Drawers";
+import Pagination from '@material-ui/lab/Pagination'
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        marginLeft : 300,
+        marginLeft: 300,
         marginTop: 10,
-        marginBottom : 40,
+        marginBottom: 40,
         width: "70%",
 
     },
@@ -57,8 +58,17 @@ function Customerslist(props) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    const [open, setOpen] = useState(false)
+    const [editOpen, setEditOpen] = useState(false)
+    const [removeOpen, setRemoveOpen] = useState(false)
+    const [ids, setIds] = useState('')
+
+    const [customer, setCustomer] = useState('')
+    const [paginationCount, setPaginationCount] = useState(0)
+
 
     const handleChangePage = (event, newPage) => {
+        console.log(newPage)
         setPage(newPage);
     };
 
@@ -69,18 +79,19 @@ function Customerslist(props) {
 
     useEffect(() => {
         const apiCall = async () => {
-            const result = await axios.get('https://jsonplaceholder.typicode.com/users')
-            setArr(result.data)
+            const token = {
+                headers: {
+                    'x-auth': JSON.parse(localStorage.getItem("auth"))
+                }
+            }
+            const result = await axios.get(`http://localhost:3601/employees?page=${page}&size=${rowsPerPage}`, token)
+            setPaginationCount(result.data.count)
+            setArr(result.data.rows)
         }
         apiCall()
-    }, [])
+    }, [page, rowsPerPage])
 
-    const [open, setOpen] = useState(false)
-    const [editOpen, setEditOpen] = useState(false)
-    const [removeOpen, setRemoveOpen] = useState(false)
-    const [ids, setIds] = useState('')
 
-    const [customer, setCustomer] = useState('')
 
     const handleOpen = () => setOpen(true)
 
@@ -89,6 +100,7 @@ function Customerslist(props) {
     const handleEditClose = () => setEditOpen(false)
 
     const handleAdd = (data) => {
+        // console.log(data)
         setArr([...arr, data])
         handleClose()
     }
@@ -101,9 +113,9 @@ function Customerslist(props) {
         setEditOpen(true)
     }
 
-    const handleEditSave = (data) => {
+    const handleEditSave = (id, data) => {
         const result = arr.map((ele) => {
-            if (ele.email === data.email) {
+            if (ele.id === id) {
                 return { ...ele, ...data }
             } else {
                 return { ...ele }
@@ -162,17 +174,16 @@ function Customerslist(props) {
                     </TableHead>
                     <TableBody >
                         {
-                            arr.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((ele) => {
+                            arr.length > 0 && arr.map((ele) => {
                                 return (
                                     <TableRow key={ele.id}>
                                         <TableCell className={classes.cursor} onClick={() => handleSingleCustomerShow(ele.id)}>
                                             <Avatar alt={ele.firstName} src="." className={classes.avatar} />
-                                            <b>{ele.name}</b>
                                         </TableCell>
-                                        <TableCell>{ele.username}</TableCell>
+                                        <TableCell>{ele.firstName}</TableCell>
+                                        <TableCell>{ele.lastName}</TableCell>
                                         <TableCell>{ele.email}</TableCell>
-                                        <TableCell>{ele.phone}</TableCell>
-                                        <TableCell>{ele.website}</TableCell>
+                                        <TableCell>{ele.mobile}</TableCell>
                                         <TableCell className={classes.cursor} onClick={() => handleEdit(ele.id)}><EditIcon /></TableCell>
                                         <TableCell className={classes.cursor}><DeleteIcon onClick={() => handleRemoveOpen(ele.id)} /></TableCell>
                                     </TableRow>
@@ -181,14 +192,17 @@ function Customerslist(props) {
                         }
                     </TableBody>
                     <TableFooter>
-                        <TablePagination
-                            rowsPerPageOptions={[2, 5, 10]}
-                            count={arr.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
+                        {/* <Pagination count={11} defaultPage={6} siblingCount={0} /> */}
+                        {
+                            arr.length > 0 && <TablePagination
+                                rowsPerPageOptions={[2, 5, 10]}
+                                count={paginationCount}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        }
                     </TableFooter>
                 </Table>
             </TableContainer>
